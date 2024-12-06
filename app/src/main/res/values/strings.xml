@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Learning Android Architecture</string>
+    <string name="request_timeout">Error: Request timeout</string>
+    <string name="too_many_requests">Error: Too many requests</string>
+    <string name="no_internet_connection">Error: No internet connection</string>
+    <string name="server_error">Error: Server error</string>
+    <string name="serialization">Error: Serialization error</string>
+    <string name="unknown">Error: Unknown error</string>
 </resources>
