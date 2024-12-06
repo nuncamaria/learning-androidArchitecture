@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -27,36 +28,39 @@ fun PriceChangeBadge(
     change: DisplayableNumber,
     modifier: Modifier = Modifier
 ) {
-    val textColor =
+    val contentColor =
         if (change.value < 0.0) MaterialTheme.colorScheme.onError
         else Color.Green
 
-    val badgeColor =
+    val containerColor =
         if (change.value < 0.0) MaterialTheme.colorScheme.error
         else greenBackground
 
+    val icon =
+        if (change.value < 0.0) Icons.Default.KeyboardArrowDown
+        else Icons.Default.KeyboardArrowUp
+
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(Spacing.MD.dp))
-            .background(badgeColor)
+            .clip(CircleShape)
+            .background(containerColor)
             .padding(Spacing.XXXS.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = if (change.value < 0.0) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+            imageVector = icon,
             contentDescription = null,
-            tint = textColor
+            tint = contentColor
         )
 
         Text(
-            modifier = Modifier.padding(Spacing.XXS.dp),
-            color = textColor,
-            text = change.formatted,
+            modifier = Modifier.padding(horizontal = Spacing.XXS.dp),
+            color = contentColor,
+            text = "${change.formatted} %",
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
         )
     }
-
 }
 
 @PreviewLightDark

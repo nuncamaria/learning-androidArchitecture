@@ -30,6 +30,8 @@ object HttpClientFactory {
             /**
              * This block is used to configure the serialization plugin.
              * ignoreUnknownKeys is set to true to ignore unknown keys in the JSON response, to prevent our app crash.
+             * This is useful when the API changes and we don't want to update our responses.
+             * Or when we don't need all the fields in the data class response.
              */
             install(ContentNegotiation) {
                 json(
