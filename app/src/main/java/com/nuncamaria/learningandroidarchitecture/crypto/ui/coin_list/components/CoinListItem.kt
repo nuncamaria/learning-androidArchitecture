@@ -1,5 +1,6 @@
 package com.nuncamaria.learningandroidarchitecture.crypto.ui.coin_list.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ fun CoinListItem(
 ) {
     Row(
         modifier = Modifier
+            .clickable { onClick() }
             .fillMaxWidth()
             .padding(Spacing.MD.dp)
             .then(modifier),
