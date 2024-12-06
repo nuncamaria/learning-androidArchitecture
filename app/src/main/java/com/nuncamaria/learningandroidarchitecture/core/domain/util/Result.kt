@@ -1,4 +1,4 @@
-package com.nuncamaria.learningandroidarchitecture.util
+package com.nuncamaria.learningandroidarchitecture.core.domain.util
 
 typealias DomainError = Error
 

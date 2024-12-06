@@ -1,3 +1,0 @@
-package com.nuncamaria.learningandroidarchitecture.util
-
-interface Error

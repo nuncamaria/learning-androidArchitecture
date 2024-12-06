@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CryptoTracker"
+rootProject.name = "Learning Android Architecture"
 include(":app")
  

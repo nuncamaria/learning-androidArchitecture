@@ -1,4 +1,4 @@
-package com.nuncamaria.learningandroidarchitecture.util
+package com.nuncamaria.learningandroidarchitecture.core.ui.util
 
 import com.nuncamaria.learningandroidarchitecture.R
 
