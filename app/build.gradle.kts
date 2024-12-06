@@ -24,12 +24,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://api.coincap.io/v2/\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "BASE_URL", "\"https://api.coincap.io/v2/\"")
         }
     }
     compileOptions {
@@ -59,6 +65,10 @@ dependencies {
     implementation(libs.bundles.compose)
     debugImplementation(libs.bundles.compose.debug)
 
+    /*
+    * desugar jdk:
+    * Android library used to make compatible the code that uses recent Java APIs to older Android versions.
+     */
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     implementation(libs.bundles.koin)
