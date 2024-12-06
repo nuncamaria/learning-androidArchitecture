@@ -21,7 +21,6 @@ import com.nuncamaria.learningandroidarchitecture.crypto.domain.Coin
 import com.nuncamaria.learningandroidarchitecture.crypto.ui.models.CoinUi
 import com.nuncamaria.learningandroidarchitecture.ui.theme.Spacing
 
-
 @Composable
 fun CoinListItem(
     coinUi: CoinUi,
