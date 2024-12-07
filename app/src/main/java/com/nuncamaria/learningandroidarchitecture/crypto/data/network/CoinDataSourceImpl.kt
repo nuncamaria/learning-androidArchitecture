@@ -34,7 +34,7 @@ class CoinDataSourceImpl(private val httpClient: HttpClient) : CoinDataSource {
 
         return safeCall<CoinHistoryResponseDto> {
             httpClient.get(urlString = buildUrl("/assets/$coinId/history")) {
-                parameter("interval", "h6")
+                parameter("interval", "h6") //6 hours interval
                 parameter("start", startMillis)
                 parameter("end", endMillis)
             }

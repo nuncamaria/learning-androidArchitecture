@@ -68,7 +68,7 @@ class CoinListViewModel(
                 end = ZonedDateTime.now()
             )
                 .onSuccess { history ->
-
+                    println(history)
                 }
                 .onError {
                     _event.send(CoinListEvent.Error(it))
