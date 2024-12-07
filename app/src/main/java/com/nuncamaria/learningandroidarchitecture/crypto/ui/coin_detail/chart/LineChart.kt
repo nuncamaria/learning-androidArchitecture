@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -245,6 +247,49 @@ fun LineChart(
                 xLabel = dataPoints[it].xLabel
             )
         }
+
+        // Lines
+        val connectionPoints1 = mutableListOf<DataPoint>()
+        val connectionPoints2 = mutableListOf<DataPoint>()
+
+        for (i in 1 until drawPoints.size) {
+            val previousPoint = drawPoints[i - 1]
+            val currentPoint = drawPoints[i]
+
+            val x = (previousPoint.x + currentPoint.x) / 2
+            val y1 = previousPoint.y
+            val y2 = currentPoint.y
+
+            connectionPoints1.add(DataPoint(x = x, y = y1, xLabel = ""))
+            connectionPoints2.add(DataPoint(x = x, y = y2, xLabel = ""))
+        }
+
+        val linePath = Path().apply {
+            if (drawPoints.isNotEmpty()) {
+                moveTo(drawPoints.first().x, drawPoints.first().y)
+
+                for (i in 1 until drawPoints.size) {
+                    cubicTo(
+                        connectionPoints1[i - 1].x,
+                        connectionPoints1[i - 1].y,
+                        connectionPoints2[i - 1].x,
+                        connectionPoints2[i - 1].y,
+                        drawPoints[i].x,
+                        drawPoints[i].y
+                    )
+                }
+            }
+        }
+
+        drawPath(
+            path = linePath,
+            color = style.chartLineColor,
+            style = Stroke(
+                width = 5f,
+                cap = StrokeCap.Round,
+            )
+        )
+
 
         drawPoints.forEachIndexed { index, point ->
             if (isShowingDataPoints) {
