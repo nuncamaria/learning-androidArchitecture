@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -124,7 +125,6 @@ fun LineChart(
 
         val maxYLabelWidth = yLabelTextLayoutResults.maxOfOrNull { it.size.width } ?: 0
 
-
         val viewportTopY = verticalPaddingPx + xLabelLineHeight + 10f
         val viewportRightX = size.width
         val viewportBottomY = viewportTopY + viewportHeightPx
@@ -230,6 +230,46 @@ fun LineChart(
                     ),
                     strokeWidth = style.helperLineThickness
                 )
+            }
+        }
+
+        drawPoints = visibleDataPointsIndices.map {
+            val x =
+                viewportLeftX + (it - visibleDataPointsIndices.first) * xLabelWidth + xLabelWidth / 2f
+            val ratio = (dataPoints[it].y - minYValue) / (maxYValue - minYValue)
+            val y = viewportBottomY - (ratio * viewportHeightPx)
+
+            DataPoint(
+                x = x,
+                y = y,
+                xLabel = dataPoints[it].xLabel
+            )
+        }
+
+        drawPoints.forEachIndexed { index, point ->
+            if (isShowingDataPoints) {
+
+                val circleOffset = Offset(point.x, point.y)
+
+                drawCircle(
+                    color = style.selectedColor,
+                    radius = 10f,
+                    center = circleOffset
+                )
+
+                if (index == selectedDataPointIndex) {
+                    drawCircle(
+                        color = Color.White,
+                        radius = 15f,
+                        center = circleOffset
+                    )
+                    drawCircle(
+                        color = style.selectedColor,
+                        radius = 15f,
+                        center = circleOffset,
+                        style = Stroke(width = 3f)
+                    )
+                }
             }
         }
     }
