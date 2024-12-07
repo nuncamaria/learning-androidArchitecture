@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nuncamaria.learningandroidarchitecture.core.domain.util.onError
 import com.nuncamaria.learningandroidarchitecture.core.domain.util.onSuccess
 import com.nuncamaria.learningandroidarchitecture.crypto.domain.datasource.CoinDataSource
+import com.nuncamaria.learningandroidarchitecture.crypto.ui.models.CoinUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 
 class CoinListViewModel(
     private val coinDataSource: CoinDataSource
@@ -33,9 +35,7 @@ class CoinListViewModel(
     fun onAction(action: CoinListAction) {
         when (action) {
             is CoinListAction.OnRefresh -> getCoins()
-            is CoinListAction.OnCoinClick -> _state.update {
-                it.copy(selectedCoin = action.coinUi)
-            }
+            is CoinListAction.OnCoinClick -> getCoinHistoryDetail(action.coinUi)
         }
     }
 
@@ -53,6 +53,24 @@ class CoinListViewModel(
                 }
                 .onError {
                     _state.update { it.copy(isLoading = false) }
+                    _event.send(CoinListEvent.Error(it))
+                }
+        }
+    }
+
+    private fun getCoinHistoryDetail(coinUi: CoinUi) {
+        _state.update { it.copy(selectedCoin = coinUi) }
+
+        viewModelScope.launch {
+            coinDataSource.getCoinHistory(
+                coinId = coinUi.id,
+                start = ZonedDateTime.now().minusDays(5),
+                end = ZonedDateTime.now()
+            )
+                .onSuccess { history ->
+
+                }
+                .onError {
                     _event.send(CoinListEvent.Error(it))
                 }
         }
