@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nuncamaria.learningandroidarchitecture.core.domain.util.onError
 import com.nuncamaria.learningandroidarchitecture.core.domain.util.onSuccess
 import com.nuncamaria.learningandroidarchitecture.crypto.domain.datasource.CoinDataSource
+import com.nuncamaria.learningandroidarchitecture.crypto.ui.coin_detail.chart.DataPoint
 import com.nuncamaria.learningandroidarchitecture.crypto.ui.models.CoinUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class CoinListViewModel(
     private val coinDataSource: CoinDataSource
@@ -68,7 +70,23 @@ class CoinListViewModel(
                 end = ZonedDateTime.now()
             )
                 .onSuccess { history ->
-                    println(history)
+                    val dataPoints = history
+                        .sortedBy { it.dateTime }
+                        .map {
+                            DataPoint(
+                                x = it.dateTime.hour.toFloat(),
+                                y = it.priceUsd.toFloat(),
+                                xLabel = DateTimeFormatter
+                                    .ofPattern("ha\nM/dd")
+                                    .format(it.dateTime),
+                            )
+                        }
+
+                    _state.update {
+                        it.copy(
+                            selectedCoin = it.selectedCoin?.copy(coinPriceHistory = dataPoints)
+                        )
+                    }
                 }
                 .onError {
                     _event.send(CoinListEvent.Error(it))

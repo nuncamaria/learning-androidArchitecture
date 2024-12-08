@@ -2,6 +2,7 @@ package com.nuncamaria.learningandroidarchitecture.crypto.ui.coin_detail.chart
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -81,7 +83,23 @@ fun LineChart(
     }
 
     Canvas(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .pointerInput(drawPoints, xLabelWidth) {
+                detectHorizontalDragGestures { change, _ ->
+                    val newSelectedDataPointIndex = getSelectedDataPointIndex(
+                        touchOffsetX = change.position.x,
+                        triggerWidth = xLabelWidth,
+                        drawPoints = drawPoints
+                    )
+                    isShowingDataPoints =
+                        (newSelectedDataPointIndex + visibleDataPointsIndices.first) in visibleDataPointsIndices
+
+                    if (isShowingDataPoints) {
+                        onSelectedDataPoint(dataPoints[newSelectedDataPointIndex])
+                    }
+                }
+            }
     ) {
         // In a Canvas everything works in px, so we need to convert the dp values to px
         val minLabelSpacingY = style.minYLabelSpacing.toPx()
@@ -124,8 +142,6 @@ fun LineChart(
                 style = textStyle
             )
         }
-
-        val maxYLabelWidth = yLabelTextLayoutResults.maxOfOrNull { it.size.width } ?: 0
 
         val viewportTopY = verticalPaddingPx + xLabelLineHeight + 10f
         val viewportRightX = size.width
@@ -237,7 +253,7 @@ fun LineChart(
 
         drawPoints = visibleDataPointsIndices.map {
             val x =
-                viewportLeftX + (it - visibleDataPointsIndices.first) * xLabelWidth + xLabelWidth / 2f
+                viewportLeftX + (it - visibleDataPointsIndices.first) * xLabelWidth + xLabelWidth / 2.2f
             val ratio = (dataPoints[it].y - minYValue) / (maxYValue - minYValue)
             val y = viewportBottomY - (ratio * viewportHeightPx)
 
@@ -320,6 +336,19 @@ fun LineChart(
     }
 }
 
+private fun getSelectedDataPointIndex(
+    touchOffsetX: Float,
+    triggerWidth: Float,
+    drawPoints: List<DataPoint>
+): Int {
+    val triggerRangeLeft = touchOffsetX - triggerWidth / 2f
+    val triggerRangeRight = touchOffsetX + triggerWidth / 2f
+
+    return drawPoints.indexOfFirst {
+        it.x in triggerRangeLeft..triggerRangeRight
+    }
+}
+
 @Preview(widthDp = 1000)
 @Composable
 fun LineChartPreview() {
@@ -367,7 +396,6 @@ fun LineChartPreview() {
                 .background(Color.White)
                 .height(300.dp)
                 .width(700.dp),
-
-            )
+        )
     }
 }

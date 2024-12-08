@@ -1,6 +1,7 @@
 package com.nuncamaria.learningandroidarchitecture.crypto.ui.models
 
 import androidx.annotation.DrawableRes
+import com.nuncamaria.learningandroidarchitecture.crypto.ui.coin_detail.chart.DataPoint
 
 data class CoinUi(
     val id: String,
@@ -10,6 +11,7 @@ data class CoinUi(
     val marketCapUsd: DisplayableNumber,
     val priceUsd: DisplayableNumber,
     val changePercent24Hr: DisplayableNumber,
+    val coinPriceHistory: List<DataPoint> = emptyList(),
     @DrawableRes val iconRes: Int
 )
 
